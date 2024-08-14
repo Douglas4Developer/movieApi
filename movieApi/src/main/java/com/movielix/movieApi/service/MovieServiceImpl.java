@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -75,11 +76,52 @@ public class MovieServiceImpl implements MovieService  {
 
     @Override
     public MovieDto getMovie(Integer movieId) {
-        return null;
+        //1. Check the data in DB and if exists, fetch the data of given ID
+        Movie movie = movieRepository.findById(movieId).orElseThrow(() -> new RuntimeException("Movie not found!"));
+
+        //2. generate posterUrl
+        String posterUrl = baseUrl + "/file/" + movie.getPoster();
+
+        //3. map to MovieDto object and return it
+        MovieDto response = new MovieDto(
+                movie.getMovieId(),
+                movie.getTitle(),
+                movie.getDirector(),
+                movie.getStudio(),
+                movie.getMovieCast(),
+                movie.getReleaseYear(),
+                movie.getPoster(),
+                posterUrl
+        );
+
+        return response;
     }
 
     @Override
     public List<MovieDto> getAllMovies() {
-        return List.of();
+
+        //1.fetch(busca todos) all data from DB
+        List<Movie> movies = movieRepository.findAll();
+
+        List<MovieDto> movieDtos = new ArrayList<>();
+
+        //2. Interate  through the list, generate posterUIrl for each movie obj,
+        // and map to MovieDto obj
+
+        for (Movie movie : movies) {
+            String posterUrl = baseUrl + "/file/" + movie.getPoster();
+            MovieDto movieDto = new MovieDto(
+                    movie.getMovieId(),
+                    movie.getTitle(),
+                    movie.getDirector(),
+                    movie.getStudio(),
+                    movie.getMovieCast(),
+                    movie.getReleaseYear(),
+                    movie.getPoster(),
+                    posterUrl
+            );
+            movieDtos.add(movieDto);
+        }
+        return movieDtos;
     }
 }
