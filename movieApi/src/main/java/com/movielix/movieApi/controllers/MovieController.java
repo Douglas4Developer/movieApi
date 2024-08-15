@@ -3,6 +3,7 @@ package com.movielix.movieApi.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.movielix.movieApi.dto.MovieDto;
+import com.movielix.movieApi.exceptions.EmptyFileException;
 import com.movielix.movieApi.service.MovieService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,11 @@ public class MovieController {
 
     @PostMapping("/add-movie")
     public ResponseEntity<MovieDto> addMovieHandler(@RequestPart MultipartFile file,
-                                                    @RequestPart String movieDto) throws IOException {
+                                                    @RequestPart String movieDto) throws IOException, EmptyFileException {
 
+        if (file.isEmpty()){
+            throw new EmptyFileException("File is empty! Please send another file!");
+        }
         MovieDto dto = convertToMovieDto(movieDto);
         return new ResponseEntity<>(movieService.addMovie(dto, file), HttpStatus.CREATED);
     }
@@ -39,6 +43,22 @@ public class MovieController {
         return ResponseEntity.ok(movieService.getAllMovies());
 
     }
+
+    @PutMapping("/update/{movieId}")
+    public ResponseEntity<MovieDto> updateMovieHandler(@PathVariable Integer movieId,
+                                                       @RequestPart MultipartFile file,
+                                                       @RequestPart String movieDtoObj) throws IOException {
+        if (file.isEmpty()) file = null;
+        MovieDto movieDto = convertToMovieDto(movieDtoObj);
+        return ResponseEntity.ok(movieService.updateMovie(movieId, movieDto , file));
+    }
+
+    @DeleteMapping("/delete/{movieId}")
+    public ResponseEntity<String> deleteMovieHandler(@PathVariable Integer movieId) throws IOException {
+        return ResponseEntity.ok(movieService.deleteMovie(movieId));
+    }
+
+
 
 
     private MovieDto convertToMovieDto(String movieDtoObj) throws JsonProcessingException {
