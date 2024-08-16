@@ -13,7 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -217,9 +217,9 @@ public class MovieServiceImpl implements MovieService  {
 
     @Override
     public MoviePageResponse getAllMoviesWithPagination(Integer pageNumber, Integer pageSize) {
-        Pageable pegeable = (Pageable) PageRequest.of(pageNumber, pageSize);
-        
-        Page<Movie> moviePages = movieRepository.findAll((org.springframework.data.domain.Pageable) pegeable);
+        Pageable pageable = (Pageable) PageRequest.of(pageNumber, pageSize);
+
+        Page<Movie> moviePages = movieRepository.findAll(pageable);
         List<Movie> movies = moviePages.getContent();
         List<MovieDto> movieDtos = new ArrayList<>();
 
@@ -253,9 +253,9 @@ public class MovieServiceImpl implements MovieService  {
         Sort sort = dir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending()
                                                                 : Sort.by(sortBy).descending();
 
-        Pageable pegeable = (Pageable) PageRequest.of(pageNumber, pageSize, sort);
+        Pageable pageable = (Pageable) PageRequest.of(pageNumber, pageSize, sort);
 
-        Page<Movie> moviePages = movieRepository.findAll((org.springframework.data.domain.Pageable) pegeable);
+        Page<Movie> moviePages = movieRepository.findAll(pageable);
         List<Movie> movies = moviePages.getContent();
         List<MovieDto> movieDtos = new ArrayList<>();
 
@@ -278,8 +278,8 @@ public class MovieServiceImpl implements MovieService  {
         }
 
         return new MoviePageResponse(movieDtos, pageNumber, pageSize,
+                moviePages.getTotalElements(),
                 moviePages.getTotalPages(),
-                (int) moviePages.getTotalElements(),
                 moviePages.isLast());
     }
 }
