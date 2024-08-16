@@ -1,4 +1,4 @@
-package com.movielix.movieApi.exceptions;
+package com.movieflix.movieApi.exceptions;
 
 public class MovieNotFoundException extends RuntimeException {
 

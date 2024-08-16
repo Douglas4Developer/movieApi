@@ -1,4 +1,4 @@
-package com.movielix.movieApi.dto;
+package com.movieflix.movieApi.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

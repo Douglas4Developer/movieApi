@@ -1,4 +1,4 @@
-package com.movielix.movieApi.exceptions;
+package com.movieflix.movieApi.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;

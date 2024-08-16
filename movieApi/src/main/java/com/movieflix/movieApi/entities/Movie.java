@@ -1,4 +1,4 @@
-package com.movielix.movieApi.entities;
+package com.movieflix.movieApi.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

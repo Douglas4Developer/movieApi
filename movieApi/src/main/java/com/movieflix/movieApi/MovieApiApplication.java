@@ -1,4 +1,4 @@
-package com.movielix.movieApi;
+package com.movieflix.movieApi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

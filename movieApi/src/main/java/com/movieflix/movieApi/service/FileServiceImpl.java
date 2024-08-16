@@ -1,4 +1,4 @@
-package com.movielix.movieApi.service;
+package com.movieflix.movieApi.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

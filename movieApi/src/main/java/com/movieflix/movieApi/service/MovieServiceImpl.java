@@ -1,14 +1,19 @@
-package com.movielix.movieApi.service;
+package com.movieflix.movieApi.service;
 
-import com.movielix.movieApi.dto.MovieDto;
-import com.movielix.movieApi.entities.Movie;
-import com.movielix.movieApi.exceptions.FileExistsException;
-import com.movielix.movieApi.exceptions.MovieNotFoundException;
-import com.movielix.movieApi.repositories.MovieRepository;
+import com.movieflix.movieApi.dto.MovieDto;
+import com.movieflix.movieApi.entities.Movie;
+import com.movieflix.movieApi.exceptions.FileExistsException;
+import com.movieflix.movieApi.exceptions.MovieNotFoundException;
+import com.movieflix.movieApi.repositories.MovieRepository;
+import com.movieflix.movieApi.dto.MoviePageResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.print.Pageable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -208,5 +213,73 @@ public class MovieServiceImpl implements MovieService  {
 
 
         return "Movie deleted with id = " + id;
+    }
+
+    @Override
+    public MoviePageResponse getAllMoviesWithPagination(Integer pageNumber, Integer pageSize) {
+        Pageable pegeable = (Pageable) PageRequest.of(pageNumber, pageSize);
+        
+        Page<Movie> moviePages = movieRepository.findAll((org.springframework.data.domain.Pageable) pegeable);
+        List<Movie> movies = moviePages.getContent();
+        List<MovieDto> movieDtos = new ArrayList<>();
+
+        //2. Interate  through the list, generate posterUIrl for each movie obj,
+        // and map to MovieDto obj
+
+        for (Movie movie : movies) {
+            String posterUrl = baseUrl + "/file/" + movie.getPoster();
+            MovieDto movieDto = new MovieDto(
+                    movie.getMovieId(),
+                    movie.getTitle(),
+                    movie.getDirector(),
+                    movie.getStudio(),
+                    movie.getMovieCast(),
+                    movie.getReleaseYear(),
+                    movie.getPoster(),
+                    posterUrl
+            );
+            movieDtos.add(movieDto);
+        }
+
+        return new MoviePageResponse(movieDtos, pageNumber, pageSize,
+                                     moviePages.getTotalPages(),
+                                     (int) moviePages.getTotalElements(),
+                                     moviePages.isLast());
+    }
+
+    @Override
+    public MoviePageResponse getAllMoviesWithPaginationAndSorting(Integer pageNumber, Integer pageSize,
+                                                        String sortBy, String dir) {
+        Sort sort = dir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending()
+                                                                : Sort.by(sortBy).descending();
+
+        Pageable pegeable = (Pageable) PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<Movie> moviePages = movieRepository.findAll((org.springframework.data.domain.Pageable) pegeable);
+        List<Movie> movies = moviePages.getContent();
+        List<MovieDto> movieDtos = new ArrayList<>();
+
+        //2. Interate  through the list, generate posterUIrl for each movie obj,
+        // and map to MovieDto obj
+
+        for (Movie movie : movies) {
+            String posterUrl = baseUrl + "/file/" + movie.getPoster();
+            MovieDto movieDto = new MovieDto(
+                    movie.getMovieId(),
+                    movie.getTitle(),
+                    movie.getDirector(),
+                    movie.getStudio(),
+                    movie.getMovieCast(),
+                    movie.getReleaseYear(),
+                    movie.getPoster(),
+                    posterUrl
+            );
+            movieDtos.add(movieDto);
+        }
+
+        return new MoviePageResponse(movieDtos, pageNumber, pageSize,
+                moviePages.getTotalPages(),
+                (int) moviePages.getTotalElements(),
+                moviePages.isLast());
     }
 }
