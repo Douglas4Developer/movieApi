@@ -10,5 +10,9 @@
         <module name="movieApi.movieApi.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="movieApi.movieApi.main~1" target="21" />
+      <module name="movieApi.movieApi.test~1" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>
