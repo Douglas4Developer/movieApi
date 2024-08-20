@@ -1,6 +1,5 @@
 package com.movieflix.movieApi.auth.entities;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

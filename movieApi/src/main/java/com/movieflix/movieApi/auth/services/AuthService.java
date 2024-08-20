@@ -1,5 +1,5 @@
-
 package com.movieflix.movieApi.auth.services;
+
 import com.movieflix.movieApi.auth.entities.User;
 import com.movieflix.movieApi.auth.entities.UserRole;
 import com.movieflix.movieApi.auth.repositories.UserRepository;
